@@ -17,6 +17,7 @@ interface TeacherAddAssignmentScreenProps {
   onNavigate: (page: string) => void;
   assignments: Assignment[];
   setAssignments: (assignments: Assignment[]) => void;
+  currentUser?: any;
 }
 
 export default function TeacherAddAssignmentScreen({
@@ -24,6 +25,7 @@ export default function TeacherAddAssignmentScreen({
   onNavigate,
   assignments,
   setAssignments,
+  currentUser,
 }: TeacherAddAssignmentScreenProps) {
   const [activeNav, setActiveNav] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -134,6 +136,7 @@ export default function TeacherAddAssignmentScreen({
       <BottomNav
         role="teacher"
         active={activeNav}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

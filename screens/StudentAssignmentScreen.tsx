@@ -16,6 +16,7 @@ interface StudentAssignmentScreenProps {
   onNavigate: (page: string) => void;
   assignments: Assignment[];
   setAssignments: (assignments: Assignment[]) => void;
+  currentUser?: any;
 }
 
 export default function StudentAssignmentScreen({
@@ -23,6 +24,7 @@ export default function StudentAssignmentScreen({
   onNavigate,
   assignments,
   setAssignments,
+  currentUser,
 }: StudentAssignmentScreenProps) {
   const [activeNav, setActiveNav] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -96,6 +98,7 @@ export default function StudentAssignmentScreen({
         role="student"
         active={activeNav}
         unreadCount={assignments.filter((a) => a.status === 'pending').length}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

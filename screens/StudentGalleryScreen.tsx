@@ -5,9 +5,10 @@ interface StudentGalleryScreenProps {
   onLogout: () => void;
   onNavigate: (page: string, data?: any) => void;
   albums?: any[];
+  currentUser?: any;
 }
 
-export default function StudentGalleryScreen({ onLogout, onNavigate, albums = [] }: StudentGalleryScreenProps) {
+export default function StudentGalleryScreen({ onLogout, onNavigate, albums = [], currentUser }: StudentGalleryScreenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
 

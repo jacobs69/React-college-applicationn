@@ -19,9 +19,10 @@ interface NotificationsScreenProps {
   onNavigate: (page: string) => void;
   notifications: Notification[];
   onMarkAsRead: () => void;
+  currentUser?: any;
 }
 
-export default function NotificationsScreen({ onLogout, onNavigate, notifications, onMarkAsRead }: NotificationsScreenProps) {
+export default function NotificationsScreen({ onLogout, onNavigate, notifications, onMarkAsRead, currentUser }: NotificationsScreenProps) {
   const [activeNav, setActiveNav] = useState('notifications');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -145,6 +146,7 @@ export default function NotificationsScreen({ onLogout, onNavigate, notification
         role="student"
         active={activeNav}
         unreadCount={sortedNotifications.filter((n) => n.isNew).length}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

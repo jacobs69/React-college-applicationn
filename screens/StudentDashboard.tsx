@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import BottomNav from '../components/BottomNav';
 import NotificationPopup from '../components/NotificationPopup';
+import { scale, fontSize, spacing, padding, cardWidth, borderRadius, iconSize } from '../utils/responsive';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -45,8 +46,8 @@ export default function StudentDashboard({ onLogout, onNavigate, notifications =
     { id: 9, icon: 'ℹ️', label: 'About', color: '#3b82f6' },
   ];
 
-  const currentSemester = 4;
-  const currentStudentId = 'B20232637';
+  const currentSemester = currentUser?.semester || 4;
+  const currentStudentId = currentUser?.id || 'B20232637';
 
   const upcomingClasses = (() => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -124,7 +125,10 @@ export default function StudentDashboard({ onLogout, onNavigate, notifications =
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.profileBtn}>
-            <Text style={styles.profileIcon}>👤</Text>
+            <Image
+              source={currentUser?.id === 'B20232637' ? require('../assets/images/2.jpg') : require('../assets/images/pro.png')}
+              style={styles.profileImage}
+            />
           </TouchableOpacity>
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuBtn} onPress={() => setMenuOpen(!menuOpen)}>
@@ -327,6 +331,7 @@ export default function StudentDashboard({ onLogout, onNavigate, notifications =
         role="student"
         active={activeNav}
         unreadCount={notifications.filter((n) => n.isNew).length}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {
@@ -336,8 +341,6 @@ export default function StudentDashboard({ onLogout, onNavigate, notifications =
             onNavigate('notifications');
           } else if (page === 'idcard') {
             onNavigate('idcard');
-          } else if (page === 'fees') {
-            onNavigate('studentFees');
           } else if (page === 'profile') {
             onNavigate('profile');
           }
@@ -354,9 +357,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    paddingTop: 12,
+    paddingHorizontal: padding.lg,
+    paddingVertical: padding.md,
+    paddingTop: padding.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -366,57 +369,64 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 12,
-    paddingTop: 16,
+    gap: spacing.md,
+    paddingTop: spacing.lg,
   },
   greeting: {
-    fontSize: 14,
+    fontSize: fontSize.sm,
     color: '#666',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   userName: {
-    fontSize: 20,
+    fontSize: fontSize['2xl'],
     fontWeight: '700',
     color: '#1a1a2e',
     marginBottom: 2,
   },
   userInfo: {
-    fontSize: 12,
+    fontSize: fontSize.sm,
     color: '#999',
   },
   profileBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: scale(44),
+    height: scale(44),
+    borderRadius: scale(22),
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  profileImage: {
+    width: scale(44),
+    height: scale(44),
+    borderRadius: scale(22),
+    resizeMode: 'cover',
   },
   profileIcon: {
-    fontSize: 24,
+    fontSize: iconSize.md,
   },
   menuContainer: {
     position: 'relative',
   },
   menuBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: scale(44),
+    height: scale(44),
+    borderRadius: scale(22),
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
   },
   menuIcon: {
-    fontSize: 24,
+    fontSize: iconSize.md,
     color: '#1a1a2e',
   },
   dropdown: {
     position: 'absolute',
-    top: 50,
+    top: scale(50),
     right: 0,
     backgroundColor: '#fff',
-    borderRadius: 12,
-    minWidth: 160,
+    borderRadius: borderRadius.lg,
+    minWidth: scale(160),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
@@ -428,18 +438,18 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 12,
+    paddingHorizontal: padding.lg,
+    paddingVertical: padding.md,
+    gap: spacing.md,
   },
   logoutMenuItem: {
     backgroundColor: '#fff5f5',
   },
   menuItemIcon: {
-    fontSize: 18,
+    fontSize: fontSize.lg,
   },
   menuItemText: {
-    fontSize: 14,
+    fontSize: fontSize.base,
     fontWeight: '500',
     color: '#1a1a2e',
   },
@@ -452,8 +462,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e7eb',
   },
   scrollContent: {
-    paddingVertical: 16,
-    paddingBottom: 100,
+    paddingVertical: spacing.lg,
+    paddingBottom: scale(120),
   },
   classesSection: {
     marginBottom: 24,
@@ -574,18 +584,18 @@ const styles = StyleSheet.create({
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 24,
-    paddingHorizontal: 16,
+    gap: spacing.md,
+    marginBottom: spacing['2xl'],
+    paddingHorizontal: padding.lg,
   },
   actionCard: {
     flex: 1,
     minWidth: '31%',
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: borderRadius.lg,
+    padding: padding.md,
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
     borderLeftWidth: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -594,7 +604,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   actionIcon: {
-    fontSize: 28,
+    fontSize: iconSize.lg,
   },
   actionLabel: {
     fontSize: 11,

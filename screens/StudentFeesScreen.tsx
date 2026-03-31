@@ -10,12 +10,14 @@ import {
   ScrollView,
 } from 'react-native';
 import BottomNav from '../components/BottomNav';
+import { scale, fontSize, spacing, padding } from '../utils/responsive';
 
 interface StudentFeesScreenProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
   studentFees?: any;
   setStudentFees?: (fees: any) => void;
+  currentUser?: any;
 }
 
 export default function StudentFeesScreen({
@@ -23,6 +25,7 @@ export default function StudentFeesScreen({
   onNavigate,
   studentFees,
   setStudentFees,
+  currentUser,
 }: StudentFeesScreenProps) {
   const [amount, setAmount] = useState('');
   const [activeNav, setActiveNav] = useState('fees');
@@ -183,6 +186,7 @@ export default function StudentFeesScreen({
         role="student"
         active={activeNav}
         unreadCount={0}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {
@@ -208,9 +212,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   scrollContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    paddingBottom: 100,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: padding.lg,
+    paddingBottom: scale(120),
   },
   header: {
     backgroundColor: '#fff',

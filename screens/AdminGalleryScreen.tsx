@@ -6,9 +6,10 @@ interface AdminGalleryScreenProps {
   onNavigate: (page: string) => void;
   albums?: any[];
   setAlbums?: (albums: any[]) => void;
+  currentUser?: any;
 }
 
-export default function AdminGalleryScreen({ onLogout, onNavigate, albums = [], setAlbums }: AdminGalleryScreenProps) {
+export default function AdminGalleryScreen({ onLogout, onNavigate, albums = [], setAlbums, currentUser }: AdminGalleryScreenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');

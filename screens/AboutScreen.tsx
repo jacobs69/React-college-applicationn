@@ -5,9 +5,10 @@ import BottomNav from '../components/BottomNav';
 interface AboutScreenProps {
   onLogout: () => void;
   onNavigate: (page: string, data?: any) => void;
+  currentUser?: any;
 }
 
-export default function AboutScreen({ onLogout, onNavigate }: AboutScreenProps) {
+export default function AboutScreen({ onLogout, onNavigate, currentUser }: AboutScreenProps) {
   const [activeNav, setActiveNav] = useState('home');
 
   return (
@@ -135,6 +136,7 @@ export default function AboutScreen({ onLogout, onNavigate }: AboutScreenProps) 
         role="student"
         active={activeNav}
         unreadCount={0}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

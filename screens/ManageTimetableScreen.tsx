@@ -20,6 +20,7 @@ interface ManageTimetableScreenProps {
   onNavigate: (page: string) => void;
   masterTimetable: TimetableClass[];
   setMasterTimetable: (timetable: TimetableClass[]) => void;
+  currentUser?: any;
 }
 
 export default function ManageTimetableScreen({
@@ -27,6 +28,7 @@ export default function ManageTimetableScreen({
   onNavigate,
   masterTimetable,
   setMasterTimetable,
+  currentUser,
 }: ManageTimetableScreenProps) {
   const [activeNav, setActiveNav] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -240,6 +242,7 @@ export default function ManageTimetableScreen({
       <BottomNav
         role="teacher"
         active={activeNav}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

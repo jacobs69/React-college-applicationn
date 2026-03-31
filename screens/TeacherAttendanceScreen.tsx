@@ -8,13 +8,15 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
+import BottomNav from '../components/BottomNav';
 
 interface TeacherAttendanceScreenProps {
   onLogout: () => void;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, data?: any) => void;
   teacherClasses?: any[];
   attendanceRecords?: any[];
   setAttendanceRecords?: (records: any[]) => void;
+  currentUser?: any;
 }
 
 export default function TeacherAttendanceScreen({
@@ -23,10 +25,12 @@ export default function TeacherAttendanceScreen({
   teacherClasses = [],
   attendanceRecords = [],
   setAttendanceRecords,
+  currentUser,
 }: TeacherAttendanceScreenProps) {
   const [selectedClass, setSelectedClass] = useState<any>(teacherClasses[0] || null);
   const [statusMap, setStatusMap] = useState<any>({});
   const [submitted, setSubmitted] = useState(false);
+  const [activeNav, setActiveNav] = useState('attendance');
 
   // Initialize status map for selected class
   React.useEffect(() => {
@@ -83,7 +87,14 @@ export default function TeacherAttendanceScreen({
   const absentCount = Object.values(statusMap).filter((s: any) => s === 'absent').length;
 
   const renderStudent = ({ item }: { item: number }) => (
-    <View style={styles.studentCard}>
+    <TouchableOpacity
+      style={styles.studentCard}
+      onPress={() => {
+        const studentId = `B2023${String(item).padStart(2, '0')}`;
+        const studentName = `Student ${item}`;
+        onNavigate('studentAttendanceReport', { studentId, studentName });
+      }}
+    >
       <View style={styles.studentInfo}>
         <Text style={styles.rollNo}>Roll No: {item}</Text>
         <Text style={styles.studentId}>ID: B2023{String(item).padStart(2, '0')}</Text>
@@ -99,7 +110,7 @@ export default function TeacherAttendanceScreen({
           {statusMap[item] === 'present' ? 'P' : 'A'}
         </Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -194,6 +205,27 @@ export default function TeacherAttendanceScreen({
           </>
         )}
       </ScrollView>
+
+      {/* Bottom Navigation */}
+      <BottomNav
+        role="teacher"
+        active={activeNav}
+        currentUser={currentUser}
+        onNavigate={(page) => {
+          setActiveNav(page);
+          if (page === 'home') {
+            onNavigate('teacherDashboard');
+          } else if (page === 'assignments') {
+            onNavigate('teacherAddAssignment');
+          } else if (page === 'attendance') {
+            // Stay on attendance
+          } else if (page === 'results') {
+            onNavigate('teacherPostResults');
+          } else if (page === 'profile') {
+            onNavigate('profile');
+          }
+        }}
+      />
     </View>
   );
 }
@@ -236,7 +268,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingVertical: 16,
     paddingHorizontal: 16,
-    paddingBottom: 100,
+    paddingBottom: 120,
   },
   section: {
     marginBottom: 24,

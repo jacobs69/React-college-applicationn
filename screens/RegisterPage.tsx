@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
 
 export default function RegisterPage({ onBackToLogin }: { onBackToLogin: () => void }) {
   const [studentId, setStudentId] = useState('');
@@ -15,7 +15,11 @@ export default function RegisterPage({ onBackToLogin }: { onBackToLogin: () => v
         </TouchableOpacity>
 
         <View style={styles.header}>
-          <Text style={styles.headerIcon}>✨</Text>
+          <Image
+            source={require('../assets/images/CLGlogo.png')}
+            style={styles.headerLogo}
+            resizeMode="contain"
+          />
           <Text style={styles.headerTitle}>Activate Account</Text>
           <Text style={styles.headerSubtitle}>Create your student account</Text>
         </View>
@@ -38,7 +42,11 @@ export default function RegisterPage({ onBackToLogin }: { onBackToLogin: () => v
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Email Address</Text>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>📧</Text>
+              <Image
+                source={require('../assets/images/email.png')}
+                style={styles.emailIcon}
+                resizeMode="contain"
+              />
               <TextInput
                 style={styles.input}
                 placeholder="your@college.edu"
@@ -53,7 +61,11 @@ export default function RegisterPage({ onBackToLogin }: { onBackToLogin: () => v
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Password</Text>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>🔒</Text>
+              <Image
+                source={require('../assets/images/Lock.png')}
+                style={styles.lockIcon}
+                resizeMode="contain"
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Create a strong password"
@@ -68,7 +80,11 @@ export default function RegisterPage({ onBackToLogin }: { onBackToLogin: () => v
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Confirm Password</Text>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>🔒</Text>
+              <Image
+                source={require('../assets/images/Lock.png')}
+                style={styles.lockIcon}
+                resizeMode="contain"
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Confirm your password"
@@ -113,8 +129,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  headerIcon: {
-    fontSize: 60,
+  headerLogo: {
+    width: 100,
+    height: 100,
     marginBottom: 16,
   },
   headerTitle: {
@@ -153,6 +170,14 @@ const styles = StyleSheet.create({
   },
   inputIcon: {
     fontSize: 18,
+  },
+  lockIcon: {
+    width: 20,
+    height: 20,
+  },
+  emailIcon: {
+    width: 20,
+    height: 20,
   },
   input: {
     flex: 1,

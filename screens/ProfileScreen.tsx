@@ -180,6 +180,7 @@ export default function ProfileScreen({
         role={isStudent ? 'student' : 'teacher'}
         active={activeNav}
         unreadCount={0}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {
@@ -189,7 +190,13 @@ export default function ProfileScreen({
           } else if (page === 'idcard' && isStudent) {
             onNavigate('idcard');
           } else if (page === 'fees' && isStudent) {
-            onNavigate('fees');
+            onNavigate('studentFees');
+          } else if (page === 'assignments' && isTeacher) {
+            onNavigate('teacherAddAssignment');
+          } else if (page === 'attendance' && isTeacher) {
+            onNavigate('teacherAttendance');
+          } else if (page === 'results' && isTeacher) {
+            onNavigate('teacherPostResults');
           } else if (page === 'profile') {
             // Stay on profile
           }

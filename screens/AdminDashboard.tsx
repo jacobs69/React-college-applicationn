@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import BottomNav from '../components/BottomNav';
+import { scale, fontSize, spacing, padding, borderRadius, iconSize } from '../utils/responsive';
 
 interface DashboardProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
+  currentUser?: any;
 }
 
-export default function AdminDashboard({ onLogout, onNavigate }: DashboardProps) {
+export default function AdminDashboard({ onLogout, onNavigate, currentUser }: DashboardProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [activeNav, setActiveNav] = React.useState('home');
   const quickActions = [
@@ -55,7 +57,10 @@ export default function AdminDashboard({ onLogout, onNavigate }: DashboardProps)
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.profileBtn}>
-            <Text style={styles.profileIcon}>👤</Text>
+            <Image
+              source={currentUser?.id === 'B20232637' ? require('../assets/images/2.jpg') : require('../assets/images/pro.png')}
+              style={styles.profileImage}
+            />
           </TouchableOpacity>
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuBtn} onPress={() => setMenuOpen(!menuOpen)}>
@@ -231,6 +236,7 @@ export default function AdminDashboard({ onLogout, onNavigate }: DashboardProps)
       <BottomNav
         role="admin"
         active={activeNav}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {
@@ -257,9 +263,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    paddingTop: 12,
+    paddingHorizontal: padding.lg,
+    paddingVertical: padding.md,
+    paddingTop: padding.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -269,16 +275,16 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 12,
-    paddingTop: 16,
+    gap: spacing.md,
+    paddingTop: spacing.lg,
   },
   greeting: {
-    fontSize: 14,
+    fontSize: fontSize.sm,
     color: '#666',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   userName: {
-    fontSize: 20,
+    fontSize: fontSize['2xl'],
     fontWeight: '700',
     color: '#1a1a2e',
     marginBottom: 2,
@@ -294,6 +300,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  profileImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    resizeMode: 'cover',
   },
   profileIcon: {
     fontSize: 24,
@@ -355,9 +368,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e7eb',
   },
   scrollContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    paddingBottom: 100,
+    paddingHorizontal: padding.lg,
+    paddingVertical: spacing.lg,
+    paddingBottom: scale(120),
   },
   section: {
     marginBottom: 24,
@@ -413,17 +426,17 @@ const styles = StyleSheet.create({
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 24,
+    gap: spacing.md,
+    marginBottom: spacing['2xl'],
   },
   actionCard: {
     flex: 1,
     minWidth: '31%',
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: borderRadius.lg,
+    padding: padding.md,
     alignItems: 'center',
-    gap: 8,
+    gap: spacing.sm,
     borderLeftWidth: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -432,10 +445,10 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   actionIcon: {
-    fontSize: 28,
+    fontSize: iconSize.lg,
   },
   actionLabel: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     fontWeight: '600',
     color: '#1a1a2e',
     textAlign: 'center',

@@ -1,0 +1,489 @@
+================================================================================
+COLLEGEGRAM - USER DOCUMENTATION
+================================================================================
+
+INTRODUCTION
+
+Collegegram is a comprehensive college management platform that connects students, 
+teachers, and administrators. It provides secure access to academic information, 
+assignments, attendance, fees, events, and notices. The system ensures data 
+security through authentication and role-based access control.
+
+
+SYSTEM REQUIREMENTS
+
+Device: Desktop, Tablet, Mobile
+Browser: Chrome, Firefox, Edge, Safari
+Internet: Stable connection required
+Login Credentials: Student ID / Teacher ID / Email with Password
+
+
+================================================================================
+STUDENT GUIDE
+================================================================================
+
+REGISTRATION
+
+1. Open the Collegegram app
+2. Click "Activate Account" on the login screen
+3. Enter your Student ID (e.g., B20232637)
+4. Enter your college email address
+5. Create a strong password
+6. Confirm your password
+7. Click "Activate Account" to complete registration
+
+
+LOGIN
+
+1. Open the Collegegram app
+2. Select "Student" role
+3. Enter your Student ID in the ID field
+4. Enter your password
+5. Click "Sign In"
+6. You will be redirected to your Student Dashboard
+
+
+STUDENT DASHBOARD
+
+After login, you can access:
+
+- Assignments: View all assignments with due dates and submission status
+- Attendance: Check your attendance records and percentage
+- Results: View your exam results and grades
+- Fees: Check fee status and payment details
+- Events: See upcoming college events and activities
+- Gallery: Browse college photos and albums
+- Notifications: Receive important updates and announcements
+- Profile: View and edit your personal information
+
+
+VIEWING ASSIGNMENTS
+
+1. Click on "Assignments" from the dashboard
+2. View all active assignments with titles and due dates
+3. Click on an assignment to see full details
+4. Check submission status and deadlines
+5. Submit assignments before the due date
+
+
+CHECKING ATTENDANCE
+
+1. Click on "Attendance" from the dashboard
+2. View your attendance records by date
+3. See your overall attendance percentage
+4. Check which classes you attended or missed
+
+
+VIEWING RESULTS
+
+1. Click on "Results" from the dashboard
+2. View your exam results and grades
+3. See subject-wise performance
+4. Check overall GPA and rankings
+
+
+CHECKING FEES
+
+1. Click on "Fees" from the dashboard
+2. View your fee status (Paid/Pending)
+3. See fee breakdown by semester
+4. Check payment history
+
+
+ATTENDING EVENTS
+
+1. Click on "Events" from the dashboard
+2. Browse upcoming college events
+3. View event details, date, and location
+4. Register for events if available
+
+
+VIEWING GALLERY
+
+1. Click on "Gallery" from the dashboard
+2. Browse college photo albums
+3. View photos from events and activities
+4. Share or download photos if permitted
+
+
+NOTIFICATIONS
+
+1. Click on "Notifications" from the dashboard
+2. View all important announcements
+3. Read notices from teachers and administration
+4. Mark notifications as read
+
+
+PROFILE MANAGEMENT
+
+1. Click on "Profile" from the dashboard
+2. View your personal information
+3. Edit your phone number or address if needed
+4. Update your password for security
+5. Click "Save" to apply changes
+
+
+LOGOUT
+
+1. Click on "Profile" from the dashboard
+2. Scroll down and click "Logout"
+3. You will be returned to the login screen
+
+
+TROUBLESHOOTING
+
+Forgot Password: Use the login page to reset your password
+Login Issues: Verify your Student ID and password are correct
+Not Receiving Notifications: Check your notification settings
+Assignment Not Submitting: Ensure file size is within limits and connection is stable
+
+
+================================================================================
+TEACHER GUIDE
+================================================================================
+
+REGISTRATION
+
+Teachers are registered by the administration. Contact your admin for login 
+credentials using your teacher ID and email.
+
+
+LOGIN
+
+1. Open the Collegegram app
+2. Select "Teacher" role
+3. Enter your email address
+4. Enter your password
+5. Click "Sign In"
+6. You will be redirected to your Teacher Dashboard
+
+
+TEACHER DASHBOARD
+
+After login, you can access:
+
+- Classes: Manage your assigned classes
+- Assignments: Create and manage assignments
+- Attendance: Mark and track student attendance
+- Results: Post exam results and grades
+- Events: Create and manage college events
+- Gallery: Upload and manage college photos
+- Notices: Send notices to students
+- Notifications: Receive updates and messages
+- Profile: View and edit your information
+
+
+MANAGING CLASSES
+
+1. Click on "Classes" from the dashboard
+2. View all your assigned classes
+3. Click on a class to see enrolled students
+4. View class performance reports
+5. Access class-specific features
+
+
+CREATING ASSIGNMENTS
+
+1. Click on "Assignments" from the dashboard
+2. Click "Create Assignment"
+3. Enter assignment title and description
+4. Set due date and time
+5. Select the class for this assignment
+6. Click "Post Assignment"
+7. Students will receive notifications
+
+
+MARKING ATTENDANCE
+
+1. Click on "Attendance" from the dashboard
+2. Select the class and date
+3. Mark students as Present or Absent
+4. Add remarks if needed
+5. Click "Save Attendance"
+6. Students can view their attendance records
+
+
+POSTING RESULTS
+
+1. Click on "Results" from the dashboard
+2. Click "Post Results"
+3. Select the class and exam name
+4. Enter marks for each student
+5. Add subject and total marks
+6. Click "Submit Results"
+7. Students will receive their grades
+
+
+CREATING EVENTS
+
+1. Click on "Events" from the dashboard
+2. Click "Create Event"
+3. Enter event title and description
+4. Set date, time, and location
+5. Select event type (Academic/Social/Sports)
+6. Click "Post Event"
+7. Students will see the event in their calendar
+
+
+UPLOADING GALLERY PHOTOS
+
+1. Click on "Gallery" from the dashboard
+2. Click "Upload Photos"
+3. Select photos from your device
+4. Add album name and description
+5. Click "Upload"
+6. Photos will be visible to students
+
+
+SENDING NOTICES
+
+1. Click on "Notices" from the dashboard
+2. Click "Send Notice"
+3. Enter notice title and content
+4. Select recipient class or all students
+5. Set priority level
+6. Click "Send"
+7. Students will receive the notice
+
+
+PROFILE MANAGEMENT
+
+1. Click on "Profile" from the dashboard
+2. View your personal and professional information
+3. Edit your phone number or address if needed
+4. Update your password for security
+5. Click "Save" to apply changes
+
+
+LOGOUT
+
+1. Click on "Profile" from the dashboard
+2. Scroll down and click "Logout"
+3. You will be returned to the login screen
+
+
+TROUBLESHOOTING
+
+Login Issues: Verify your email and password are correct
+Students Not Seeing Assignments: Check if assignment was posted successfully
+Attendance Not Saving: Ensure all required fields are filled
+Results Not Posting: Verify marks are within valid range
+
+
+================================================================================
+ADMIN GUIDE
+================================================================================
+
+REGISTRATION
+
+Admin accounts are created during system setup. Contact system administrator 
+for initial login credentials.
+
+
+LOGIN
+
+1. Open the Collegegram app
+2. Select "Admin" role
+3. Enter your email address
+4. Enter your password
+5. Click "Sign In"
+6. You will be redirected to your Admin Dashboard
+
+
+ADMIN DASHBOARD
+
+After login, you can access:
+
+- Classes: Manage all college classes
+- Students: Manage student accounts and information
+- Teachers: Manage teacher accounts and assignments
+- Fees: Manage fee structure and payments
+- Events: Oversee all college events
+- Gallery: Manage college photo albums
+- Notices: Post system-wide announcements
+- Reports: View analytics and performance reports
+- Notifications: Send system notifications
+- Profile: View and edit your information
+
+
+MANAGING CLASSES
+
+1. Click on "Classes" from the dashboard
+2. View all college classes
+3. Click "Add Class" to create a new class
+4. Enter class name, section, and capacity
+5. Assign a class teacher
+6. Click "Save"
+7. View class performance reports
+
+
+MANAGING STUDENTS
+
+1. Click on "Students" from the dashboard
+2. View all registered students
+3. Click on a student to view details
+4. Edit student information if needed
+5. View student attendance and results
+6. Deactivate or activate student accounts
+
+
+MANAGING TEACHERS
+
+1. Click on "Teachers" from the dashboard
+2. View all registered teachers
+3. Click "Add Teacher" to register new teacher
+4. Enter teacher details and credentials
+5. Assign classes to teacher
+6. Click "Save"
+7. Edit or remove teacher assignments
+
+
+MANAGING FEES
+
+1. Click on "Fees" from the dashboard
+2. View fee structure and payment status
+3. Click "Set Fee Structure" to define fees
+4. Enter fee amount and due date
+5. Select applicable classes
+6. Click "Save"
+7. View payment history and pending fees
+
+
+MANAGING EVENTS
+
+1. Click on "Events" from the dashboard
+2. View all college events
+3. Approve or reject event requests from teachers
+4. Create system-wide events
+5. Edit event details
+6. Archive past events
+
+
+MANAGING GALLERY
+
+1. Click on "Gallery" from the dashboard
+2. View all uploaded albums
+3. Approve or reject album uploads
+4. Delete inappropriate content
+5. Organize albums by category
+
+
+POSTING NOTICES
+
+1. Click on "Notices" from the dashboard
+2. Click "Post Notice"
+3. Enter notice title and content
+4. Select visibility (All/Students/Teachers)
+5. Set priority level
+6. Click "Post"
+7. All users will receive the notice
+
+
+VIEWING REPORTS
+
+1. Click on "Reports" from the dashboard
+2. Select report type (Attendance/Results/Fees/Performance)
+3. Choose date range or class
+4. View analytics and charts
+5. Export reports if needed
+
+
+SENDING NOTIFICATIONS
+
+1. Click on "Notifications" from the dashboard
+2. Click "Send Notification"
+3. Enter notification title and message
+4. Select recipient group
+5. Click "Send"
+6. Users will receive the notification
+
+
+PROFILE MANAGEMENT
+
+1. Click on "Profile" from the dashboard
+2. View your personal information
+3. Edit your phone number or address if needed
+4. Update your password for security
+5. Click "Save" to apply changes
+
+
+LOGOUT
+
+1. Click on "Profile" from the dashboard
+2. Scroll down and click "Logout"
+3. You will be returned to the login screen
+
+
+TROUBLESHOOTING
+
+Login Issues: Verify your email and password are correct
+Cannot Add Student: Check if Student ID already exists
+Fee Structure Not Saving: Ensure all required fields are filled
+Reports Not Loading: Try refreshing the page or check internet connection
+
+
+================================================================================
+GENERAL SECURITY MEASURES
+================================================================================
+
+- All user data is encrypted and stored securely
+- Passwords must be strong and changed regularly
+- Never share your login credentials with anyone
+- Always logout after using the application
+- Use secure internet connection, avoid public WiFi for sensitive operations
+- Report suspicious activity to administration immediately
+- Enable two-factor authentication if available
+
+
+================================================================================
+COMMON FEATURES FOR ALL USERS
+================================================================================
+
+NOTIFICATIONS
+
+- Receive real-time updates about assignments, results, and events
+- Click on notifications to view full details
+- Mark notifications as read
+- Customize notification preferences in settings
+
+
+PROFILE
+
+- View personal information
+- Edit contact details
+- Change password
+- View account activity
+
+
+BOTTOM NAVIGATION
+
+- Quick access to main features
+- Dashboard: Return to main screen
+- Assignments/Classes: View academic content
+- Attendance/Results: Check performance
+- Fees/Events: View financial and social information
+- Gallery: Browse photos
+- Profile: Manage account
+
+
+BACK BUTTON
+
+- Navigate back to previous screen
+- Works on all screens except dashboard
+- Maintains navigation history
+
+
+================================================================================
+SUPPORT AND HELP
+================================================================================
+
+For technical issues or questions:
+- Contact your college IT support team
+- Email: support@collegegram.edu
+- Phone: Available during college hours
+- Visit the help section in the app for FAQs
+
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================

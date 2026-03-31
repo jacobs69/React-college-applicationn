@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { scale, fontSize, spacing, padding, iconSize, bottomNavHeight } from '../utils/responsive';
+import { getTheme, componentStyles } from '../utils/theme';
 
 interface NavIconProps {
   icon: string;
@@ -7,25 +9,50 @@ interface NavIconProps {
   onPress: () => void;
   active: boolean;
   badge?: number;
+  themeColor: string;
+  isPng?: boolean;
 }
 
-function NavIcon({ icon, label, onPress, active, badge = 0 }: NavIconProps) {
+function NavIcon({ icon, label, onPress, active, badge = 0, themeColor, isPng = false }: NavIconProps) {
   return (
     <TouchableOpacity
-      style={[styles.navItem, active && styles.navItemActive]}
+      style={[
+        styles.navItem,
+        active && {
+          backgroundColor: `${themeColor}15`,
+          borderRadius: scale(12),
+        }
+      ]}
       onPress={onPress}
+      activeOpacity={0.7}
     >
       <View style={styles.iconContainer}>
-        <Text style={[styles.icon, active ? styles.iconActive : styles.iconInactive]}>
-          {icon}
-        </Text>
+        {isPng ? (
+          <Image
+            source={icon as any}
+            style={[
+              styles.pngIcon,
+              active ? { tintColor: themeColor } : { tintColor: '#9ca3af' }
+            ]}
+          />
+        ) : (
+          <Text style={[
+            styles.icon,
+            active ? { color: themeColor } : styles.iconInactive
+          ]}>
+            {icon}
+          </Text>
+        )}
         {badge > 0 && (
-          <View style={styles.badge}>
+          <View style={[styles.badge, { backgroundColor: themeColor }]}>
             <Text style={styles.badgeText}>{badge > 99 ? '99+' : badge}</Text>
           </View>
         )}
       </View>
-      <Text style={[styles.label, active ? styles.labelActive : styles.labelInactive]}>
+      <Text style={[
+        styles.label,
+        active ? { color: themeColor, fontWeight: '700' } : styles.labelInactive
+      ]}>
         {label}
       </Text>
     </TouchableOpacity>
@@ -37,6 +64,7 @@ interface BottomNavProps {
   active?: string;
   unreadCount?: number;
   onNavigate: (page: string) => void;
+  currentUser?: any;
 }
 
 export default function BottomNav({
@@ -44,35 +72,40 @@ export default function BottomNav({
   active = 'home',
   unreadCount = 0,
   onNavigate,
+  currentUser,
 }: BottomNavProps) {
+  const theme = getTheme(role);
   const studentNav = [
-    { icon: '🏠', label: 'Home', id: 'home', badge: 0 },
-    { icon: '🔔', label: 'Notifs', id: 'notifications', badge: unreadCount },
-    { icon: '🆔', label: 'ID Card', id: 'idcard', badge: 0 },
-    { icon: '💳', label: 'Fees', id: 'fees', badge: 0 },
-    { icon: '👤', label: 'Profile', id: 'profile', badge: 0 },
+    { icon: require('../assets/images/home.png'), label: 'Home', id: 'home', badge: 0, isPng: true },
+    { icon: require('../assets/images/noti.png'), label: 'Notifs', id: 'notifications', badge: unreadCount, isPng: true },
+    { icon: require('../assets/images/id 12.png'), label: 'ID Card', id: 'idcard', badge: 0, isPng: true },
+    { icon: currentUser?.id === 'B20232637' ? require('../assets/images/2.jpg') : require('../assets/images/pro.png'), label: 'Profile', id: 'profile', badge: 0, isPng: true },
   ];
 
   const teacherNav = [
-    { icon: '🏠', label: 'Home', id: 'home', badge: 0 },
-    { icon: '📝', label: 'Assign', id: 'assignments', badge: 0 },
+    { icon: require('../assets/images/home.png'), label: 'Home', id: 'home', badge: 0, isPng: true },
+    { icon: require('../assets/images/assign.png'), label: 'Assign', id: 'assignments', badge: 0, isPng: true },
     { icon: '✅', label: 'Attend', id: 'attendance', badge: 0 },
-    { icon: '📊', label: 'Results', id: 'results', badge: 0 },
-    { icon: '👤', label: 'Profile', id: 'profile', badge: 0 },
+    { icon: require('../assets/images/result.png'), label: 'Results', id: 'results', badge: 0, isPng: true },
+    { icon: currentUser?.id === 'B20232637' ? require('../assets/images/2.jpg') : require('../assets/images/pro.png'), label: 'Profile', id: 'profile', badge: 0, isPng: true },
   ];
 
   const adminNav = [
-    { icon: '🏠', label: 'Home', id: 'home', badge: 0 },
+    { icon: require('../assets/images/home.png'), label: 'Home', id: 'home', badge: 0, isPng: true },
     { icon: '👥', label: 'Users', id: 'users', badge: 0 },
     { icon: '💰', label: 'Fees', id: 'fees', badge: 0 },
     { icon: '📊', label: 'Reports', id: 'reports', badge: 0 },
-    { icon: '👤', label: 'Profile', id: 'profile', badge: 0 },
+    { icon: currentUser?.id === 'B20232637' ? require('../assets/images/2.jpg') : require('../assets/images/pro.png'), label: 'Profile', id: 'profile', badge: 0, isPng: true },
   ];
 
   const navItems = role === 'teacher' ? teacherNav : role === 'admin' ? adminNav : studentNav;
 
+  // Light blue background for nav bar
+  const navBackgroundColor = role === 'student' ? '#EFF6FF' : role === 'teacher' ? '#F3F0FF' : '#FEF2F2';
+  const navBorderColor = role === 'student' ? '#BFDBFE' : role === 'teacher' ? '#E9D5FF' : '#FECACA';
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: navBackgroundColor, borderTopColor: navBorderColor }]}>
       {navItems.map((item) => (
         <NavIcon
           key={item.id}
@@ -80,6 +113,8 @@ export default function BottomNav({
           label={item.label}
           active={active === item.id}
           badge={item.badge || 0}
+          themeColor={theme.primary}
+          isPng={item.isPng || false}
           onPress={() => onNavigate(item.id)}
         />
       ))}
@@ -93,67 +128,68 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#1f2937',
-    borderTopWidth: 1,
-    borderTopColor: '#374151',
+    borderTopWidth: 2,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    paddingBottom: 24,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingBottom: scale(24),
+    height: bottomNavHeight,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 8,
   },
   navItem: {
     flex: 1,
     alignItems: 'center',
-    gap: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderRadius: 12,
-  },
-  navItemActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    gap: spacing.xs,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    borderRadius: scale(12),
+    justifyContent: 'center',
   },
   iconContainer: {
     position: 'relative',
-    width: 32,
-    height: 32,
+    width: scale(32),
+    height: scale(32),
     justifyContent: 'center',
     alignItems: 'center',
   },
   icon: {
-    fontSize: 20,
+    fontSize: iconSize.md,
   },
-  iconActive: {
-    color: '#60a5fa',
+  pngIcon: {
+    width: scale(24),
+    height: scale(24),
+    resizeMode: 'contain',
   },
   iconInactive: {
     color: '#9ca3af',
   },
   label: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  labelActive: {
-    color: '#60a5fa',
+    fontSize: fontSize.xs,
+    fontWeight: '500',
+    color: '#6B7280',
   },
   labelInactive: {
-    color: '#9ca3af',
+    color: '#6B7280',
   },
   badge: {
     position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#ef4444',
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
+    top: scale(-4),
+    right: scale(-4),
+    borderRadius: scale(8),
+    minWidth: scale(18),
+    height: scale(18),
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
   },
   badgeText: {
     color: '#fff',
-    fontSize: 8,
+    fontSize: fontSize.xs,
     fontWeight: '700',
   },
 });

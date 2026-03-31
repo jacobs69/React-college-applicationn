@@ -25,12 +25,14 @@ interface StudentResultsScreenProps {
   onLogout: () => void;
   onNavigate: (page: string, data?: any) => void;
   studentResults: Result[];
+  currentUser?: any;
 }
 
 export default function StudentResultsScreen({
   onLogout,
   onNavigate,
   studentResults,
+  currentUser,
 }: StudentResultsScreenProps) {
   const [activeNav, setActiveNav] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -106,6 +108,7 @@ export default function StudentResultsScreen({
         role="student"
         active={activeNav}
         unreadCount={0}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

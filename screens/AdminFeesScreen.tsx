@@ -9,6 +9,8 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { scale, fontSize, spacing, padding, borderRadius } from '../utils/responsive';
+import BottomNav from '../components/BottomNav';
 
 interface AdminFeesScreenProps {
   onLogout: () => void;

@@ -5,9 +5,10 @@ interface AlbumDetailScreenProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
   album?: any;
+  currentUser?: any;
 }
 
-export default function AlbumDetailScreen({ onLogout, onNavigate, album }: AlbumDetailScreenProps) {
+export default function AlbumDetailScreen({ onLogout, onNavigate, album, currentUser }: AlbumDetailScreenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [savedImages, setSavedImages] = useState<number[]>([]);
 

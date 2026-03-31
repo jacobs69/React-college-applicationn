@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, BackHandler, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { navigationHistory } from '../utils/navigationHistory';
+import { authAPI, tokenAPI } from '../utils/api';
 import LandingPage from '../screens/LandingPage';
 import LoginPage from '../screens/LoginPage';
 import RegisterPage from '../screens/RegisterPage';
@@ -19,6 +21,8 @@ import ResultDetailScreen from '../screens/ResultDetailScreen';
 import TeacherPostResultsScreen from '../screens/TeacherPostResultsScreen';
 import TeacherAttendanceScreen from '../screens/TeacherAttendanceScreen';
 import StudentAttendanceScreen from '../screens/StudentAttendanceScreen';
+import StudentAttendanceReportScreen from '../screens/StudentAttendanceReportScreen';
+import StudentOverallReportScreen from '../screens/StudentOverallReportScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import StudentFeesScreen from '../screens/StudentFeesScreen';
 import AdminFeesScreen from '../screens/AdminFeesScreen';
@@ -34,6 +38,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [selectedAlbum, setSelectedAlbum] = useState<any>(null);
   const [selectedClass, setSelectedClass] = useState<any>(null);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [currentUser, setCurrentUser] = useState<any>({
     id: 'B20232637',
     name: 'Jai Kantharia',
@@ -200,40 +205,134 @@ export default function App() {
     },
   ]);
 
-  const handleLogin = (role: string) => {
-    if (role === 'admin') {
-      setCurrentPage('adminDashboard');
-    } else if (role === 'teacher') {
+  const handleLogin = async (role: string, userData: any) => {
+    try {
+      // Save token if available
+      if (userData.token) {
+        await tokenAPI.saveToken(userData.token);
+      }
+
+      // Update current user with backend data
       setCurrentUser({
-        id: 'PROF001',
-        name: 'Prof. Sharma',
-        role: 'teacher',
-        department: 'IT',
+        id: userData.id || userData.studentId || userData.teacherId,
+        name: userData.name,
+        email: userData.email,
+        role: userData.role,
+        department: userData.department || 'IT',
+        semester: userData.semester || 4,
+        rollNo: userData.rollNo,
+        studentId: userData.studentId,
+        teacherId: userData.teacherId,
       });
-      setCurrentPage('teacherDashboard');
-    } else {
-      setCurrentUser({
-        id: 'B20232637',
-        name: 'Jai Kantharia',
-        role: 'student',
-        department: 'IT',
-        semester: 4,
-        rollNo: 37,
-      });
-      setCurrentPage('studentDashboard');
+
+      // Initialize navigation history and navigate to dashboard
+      if (role === 'admin') {
+        navigationHistory.setInitial('adminDashboard');
+        setCurrentPage('adminDashboard');
+      } else if (role === 'teacher') {
+        navigationHistory.setInitial('teacherDashboard');
+        setCurrentPage('teacherDashboard');
+      } else {
+        navigationHistory.setInitial('studentDashboard');
+        setCurrentPage('studentDashboard');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', 'Failed to login. Please try again.');
     }
   };
 
-  const handleLogout = () => {
-    setCurrentPage('login');
+  const handleLogout = async () => {
+    try {
+      await tokenAPI.removeToken();
+      navigationHistory.reset();
+      setCurrentUser(null);
+      setCurrentPage('login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      setCurrentPage('login');
+    }
   };
+
+  // Check for existing token on app start
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await tokenAPI.getToken();
+        if (token) {
+          try {
+            const response = await authAPI.verifyToken(token);
+            if (response.success && response.user) {
+              // Token is valid, auto-login
+              setCurrentUser({
+                id: response.user.id || response.user.studentId || response.user.teacherId,
+                name: response.user.name,
+                email: response.user.email,
+                role: response.user.role,
+                department: response.user.department || 'IT',
+                semester: response.user.semester || 4,
+                rollNo: response.user.rollNo,
+                studentId: response.user.studentId,
+                teacherId: response.user.teacherId,
+              });
+              
+              const role = response.user.role;
+              if (role === 'admin') {
+                navigationHistory.setInitial('adminDashboard');
+                setCurrentPage('adminDashboard');
+              } else if (role === 'teacher') {
+                navigationHistory.setInitial('teacherDashboard');
+                setCurrentPage('teacherDashboard');
+              } else {
+                navigationHistory.setInitial('studentDashboard');
+                setCurrentPage('studentDashboard');
+              }
+            } else {
+              // Token invalid, go to login
+              await tokenAPI.removeToken();
+              setCurrentPage('login');
+            }
+          } catch (verifyError) {
+            console.error('Token verification error:', verifyError);
+            // Token verification failed, go to login
+            await tokenAPI.removeToken();
+            setCurrentPage('login');
+          }
+        }
+      } catch (error) {
+        console.error('Token check failed:', error);
+        setCurrentPage('login');
+      }
+    };
+
+    checkToken();
+  }, []);
 
   const handleNavigate = (page: string, data?: any) => {
     if (data) {
-      setSelectedClass(data);
+      if (page === 'studentAttendanceReport' || page === 'studentOverallReport') {
+        setSelectedStudent(data);
+      } else {
+        setSelectedClass(data);
+      }
     }
+    navigationHistory.push(page);
     setCurrentPage(page);
   };
+
+  const handleGoBack = () => {
+    const previousPage = navigationHistory.pop();
+    if (previousPage) {
+      setCurrentPage(previousPage);
+      return true; // Prevent default back behavior
+    }
+    return false; // Allow default back behavior (exit app)
+  };
+
+  // Handle Android back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleGoBack);
+    return () => backHandler.remove();
+  }, []);
 
   const handleSendNotice = (notice: any) => {
     setNotifications([...notifications, notice]);
@@ -314,79 +413,85 @@ export default function App() {
       content = <RegisterPage onBackToLogin={() => setCurrentPage('login')} />;
       break;
     case 'studentDashboard':
-      content = <StudentDashboard onLogout={handleLogout} onNavigate={setCurrentPage} notifications={notifications} masterTimetable={masterTimetable} studentResults={studentResults} setSelectedResult={setSelectedResult} assignments={assignments} currentUser={currentUser} attendance={attendanceRecords} events={events} />;
+      content = <StudentDashboard onLogout={handleLogout} onNavigate={handleNavigate} notifications={notifications} masterTimetable={masterTimetable} studentResults={studentResults} setSelectedResult={setSelectedResult} assignments={assignments} currentUser={currentUser} attendance={attendanceRecords} events={events} />;
       break;
     case 'teacherDashboard':
       content = <TeacherDashboard onLogout={handleLogout} onNavigate={handleNavigate} currentUser={currentUser} assignments={assignments} teacherClasses={teacherClasses} events={events} attendanceRecords={attendanceRecords} />;
       break;
     case 'adminDashboard':
-      content = <AdminDashboard onLogout={handleLogout} onNavigate={setCurrentPage} />;
+      content = <AdminDashboard onLogout={handleLogout} onNavigate={handleNavigate} currentUser={currentUser} />;
       break;
     case 'idcard':
-      content = <IDCardScreen onLogout={handleLogout} onNavigate={setCurrentPage} />;
+      content = <IDCardScreen onLogout={handleLogout} onNavigate={handleNavigate} currentUser={currentUser} />;
       break;
     case 'sendNotice':
-      content = <SendNotice onLogout={handleLogout} onNavigate={setCurrentPage} onSendNotice={handleSendNotice} />;
+      content = <SendNotice onLogout={handleLogout} onNavigate={handleNavigate} onSendNotice={handleSendNotice} currentUser={currentUser} />;
       break;
     case 'notifications':
-      content = <NotificationsScreen onLogout={handleLogout} onNavigate={setCurrentPage} notifications={notifications} onMarkAsRead={handleMarkNotificationsAsRead} />;
+      content = <NotificationsScreen onLogout={handleLogout} onNavigate={handleNavigate} notifications={notifications} onMarkAsRead={handleMarkNotificationsAsRead} currentUser={currentUser} />;
       break;
     case 'studentTimetable':
-      content = <StudentTimetableScreen onLogout={handleLogout} onNavigate={setCurrentPage} masterTimetable={masterTimetable} />;
+      content = <StudentTimetableScreen onLogout={handleLogout} onNavigate={handleNavigate} masterTimetable={masterTimetable} currentUser={currentUser} />;
       break;
     case 'manageTimetable':
-      content = <ManageTimetableScreen onLogout={handleLogout} onNavigate={setCurrentPage} masterTimetable={masterTimetable} setMasterTimetable={setMasterTimetable} />;
+      content = <ManageTimetableScreen onLogout={handleLogout} onNavigate={handleNavigate} masterTimetable={masterTimetable} setMasterTimetable={setMasterTimetable} currentUser={currentUser} />;
       break;
     case 'teacherAddAssignment':
-      content = <TeacherAddAssignmentScreen onLogout={handleLogout} onNavigate={setCurrentPage} assignments={assignments} setAssignments={handlePostAssignment} />;
+      content = <TeacherAddAssignmentScreen onLogout={handleLogout} onNavigate={handleNavigate} assignments={assignments} setAssignments={handlePostAssignment} currentUser={currentUser} />;
       break;
     case 'studentAssignments':
-      content = <StudentAssignmentScreen onLogout={handleLogout} onNavigate={setCurrentPage} assignments={assignments} setAssignments={setAssignments} />;
+      content = <StudentAssignmentScreen onLogout={handleLogout} onNavigate={handleNavigate} assignments={assignments} setAssignments={setAssignments} currentUser={currentUser} />;
       break;
     case 'studentResults':
-      content = <StudentResultsScreen onLogout={handleLogout} onNavigate={(page, data) => { if (data) setSelectedResult(data); setCurrentPage(page); }} studentResults={studentResults} />;
+      content = <StudentResultsScreen onLogout={handleLogout} onNavigate={(page, data) => { if (data) setSelectedResult(data); handleNavigate(page); }} studentResults={studentResults} currentUser={currentUser} />;
       break;
     case 'resultDetail':
-      content = <ResultDetailScreen onLogout={handleLogout} onNavigate={setCurrentPage} result={selectedResult} />;
+      content = <ResultDetailScreen onLogout={handleLogout} onNavigate={handleNavigate} result={selectedResult} currentUser={currentUser} />;
       break;
     case 'teacherPostResults':
-      content = <TeacherPostResultsScreen onLogout={handleLogout} onNavigate={setCurrentPage} onPostResult={handlePostResult} />;
+      content = <TeacherPostResultsScreen onLogout={handleLogout} onNavigate={handleNavigate} onPostResult={handlePostResult} currentUser={currentUser} />;
       break;
     case 'teacherPostEvent':
-      content = <TeacherPostEventScreen onLogout={handleLogout} onNavigate={setCurrentPage} onPostEvent={handlePostEvent} currentUser={currentUser} />;
+      content = <TeacherPostEventScreen onLogout={handleLogout} onNavigate={handleNavigate} onPostEvent={handlePostEvent} currentUser={currentUser} />;
       break;
     case 'studentEvents':
-      content = <StudentEventsScreen onLogout={handleLogout} onNavigate={setCurrentPage} events={events} currentUser={currentUser} />;
+      content = <StudentEventsScreen onLogout={handleLogout} onNavigate={handleNavigate} events={events} currentUser={currentUser} />;
       break;
     case 'about':
-      content = <AboutScreen onLogout={handleLogout} onNavigate={setCurrentPage} />;
+      content = <AboutScreen onLogout={handleLogout} onNavigate={handleNavigate} currentUser={currentUser} />;
       break;
     case 'classDetail':
-      content = <ClassDetailScreen onLogout={handleLogout} onNavigate={handleNavigate} classData={selectedClass} attendanceRecords={attendanceRecords} setAttendanceRecords={setAttendanceRecords} />;
+      content = <ClassDetailScreen onLogout={handleLogout} onNavigate={handleNavigate} classData={selectedClass} attendanceRecords={attendanceRecords} setAttendanceRecords={setAttendanceRecords} currentUser={currentUser} />;
       break;
     case 'teacherAttendance':
-      content = <TeacherAttendanceScreen onLogout={handleLogout} onNavigate={setCurrentPage} teacherClasses={teacherClasses} attendanceRecords={attendanceRecords} setAttendanceRecords={setAttendanceRecords} />;
+      content = <TeacherAttendanceScreen onLogout={handleLogout} onNavigate={handleNavigate} teacherClasses={teacherClasses} attendanceRecords={attendanceRecords} setAttendanceRecords={setAttendanceRecords} currentUser={currentUser} />;
       break;
     case 'studentAttendance':
-      content = <StudentAttendanceScreen onLogout={handleLogout} onNavigate={setCurrentPage} attendanceRecords={attendanceRecords} currentUser={currentUser} />;
+      content = <StudentAttendanceScreen onLogout={handleLogout} onNavigate={handleNavigate} attendanceRecords={attendanceRecords} currentUser={currentUser} />;
+      break;
+    case 'studentAttendanceReport':
+      content = <StudentAttendanceReportScreen onLogout={handleLogout} onNavigate={handleNavigate} studentId={selectedStudent?.studentId} studentName={selectedStudent?.studentName} attendanceRecords={attendanceRecords} currentUser={currentUser} />;
+      break;
+    case 'studentOverallReport':
+      content = <StudentOverallReportScreen onLogout={handleLogout} onNavigate={handleNavigate} studentId={selectedStudent?.studentId} studentName={selectedStudent?.studentName} attendanceRecords={attendanceRecords} assignments={assignments} studentResults={studentResults} currentUser={currentUser} />;
       break;
     case 'profile':
-      content = <ProfileScreen onLogout={handleLogout} onNavigate={setCurrentPage} currentUser={currentUser} />;
+      content = <ProfileScreen onLogout={handleLogout} onNavigate={handleNavigate} currentUser={currentUser} />;
       break;
     case 'studentFees':
-      content = <StudentFeesScreen onLogout={handleLogout} onNavigate={setCurrentPage} studentFees={studentFees} setStudentFees={setStudentFees} />;
+      content = <StudentFeesScreen onLogout={handleLogout} onNavigate={handleNavigate} studentFees={studentFees} setStudentFees={setStudentFees} currentUser={currentUser} />;
       break;
     case 'adminFees':
-      content = <AdminFeesScreen onLogout={handleLogout} onNavigate={setCurrentPage} studentFees={allStudentFees} setStudentFees={setAllStudentFees} />;
+      content = <AdminFeesScreen onLogout={handleLogout} onNavigate={handleNavigate} studentFees={allStudentFees} setStudentFees={setAllStudentFees} />;
       break;
     case 'adminGallery':
-      content = <AdminGalleryScreen onLogout={handleLogout} onNavigate={setCurrentPage} albums={albums} setAlbums={setAlbums} />;
+      content = <AdminGalleryScreen onLogout={handleLogout} onNavigate={handleNavigate} albums={albums} setAlbums={setAlbums} currentUser={currentUser} />;
       break;
     case 'studentGallery':
-      content = <StudentGalleryScreen onLogout={handleLogout} onNavigate={(page: string, data?: any) => { if (data) setSelectedAlbum(data); setCurrentPage(page); }} albums={albums} />;
+      content = <StudentGalleryScreen onLogout={handleLogout} onNavigate={(page: string, data?: any) => { if (data) setSelectedAlbum(data); handleNavigate(page); }} albums={albums} currentUser={currentUser} />;
       break;
     case 'albumDetail':
-      content = <AlbumDetailScreen onLogout={handleLogout} onNavigate={setCurrentPage} album={selectedAlbum} />;
+      content = <AlbumDetailScreen onLogout={handleLogout} onNavigate={handleNavigate} album={selectedAlbum} currentUser={currentUser} />;
       break;
     default:
       content = <LandingPage onGoToLogin={() => setCurrentPage('login')} />;

@@ -5,9 +5,10 @@ interface SendNoticeProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
   onSendNotice: (notice: any) => void;
+  currentUser?: any;
 }
 
-export default function SendNotice({ onLogout, onNavigate, onSendNotice }: SendNoticeProps) {
+export default function SendNotice({ onLogout, onNavigate, onSendNotice, currentUser }: SendNoticeProps) {
   const [noticeType, setNoticeType] = useState('assignment');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');

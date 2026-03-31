@@ -10,17 +10,20 @@ import {
   FlatList,
   Image,
 } from 'react-native';
+import BottomNav from '../components/BottomNav';
 
 interface TeacherPostResultsScreenProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
   onPostResult: (result: any) => void;
+  currentUser?: any;
 }
 
 export default function TeacherPostResultsScreen({
   onLogout,
   onNavigate,
   onPostResult,
+  currentUser,
 }: TeacherPostResultsScreenProps) {
   const [semester, setSemester] = useState('4');
   const [examType, setExamType] = useState('Semester');
@@ -28,6 +31,7 @@ export default function TeacherPostResultsScreen({
   const [sgpa, setSgpa] = useState('');
   const [subjects, setSubjects] = useState<any[]>([]);
   const [subjectName, setSubjectName] = useState('');
+  const [activeNav, setActiveNav] = useState('results');
   const [subjectCode, setSubjectCode] = useState('');
   const [marks, setMarks] = useState('');
   const [grade, setGrade] = useState('O');
@@ -324,6 +328,27 @@ export default function TeacherPostResultsScreen({
           <Text style={styles.postBtnText}>Post Results</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Bottom Navigation */}
+      <BottomNav
+        role="teacher"
+        active={activeNav}
+        currentUser={currentUser}
+        onNavigate={(page) => {
+          setActiveNav(page);
+          if (page === 'home') {
+            onNavigate('teacherDashboard');
+          } else if (page === 'assignments') {
+            onNavigate('teacherAddAssignment');
+          } else if (page === 'attendance') {
+            onNavigate('teacherAttendance');
+          } else if (page === 'results') {
+            // Stay on results
+          } else if (page === 'profile') {
+            onNavigate('profile');
+          }
+        }}
+      />
     </View>
   );
 }

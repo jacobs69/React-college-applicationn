@@ -1,17 +1,20 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, Image } from 'react-native';
+import { authAPI } from '../utils/api';
+import { getStudentData, validateStudentLogin } from '../data/studentsDatabase';
 
 export default function LoginPage({
   onLogin,
   onGoToRegister,
 }: {
-  onLogin: (role: string) => void;
+  onLogin: (role: string, userData: any) => void;
   onGoToRegister: () => void;
 }) {
   const [role, setRole] = useState('student');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const passwordInputRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -41,11 +44,52 @@ export default function LoginPage({
     }
   };
 
+  const handleLoginPress = async () => {
+    if (!identifier || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // For student role, check local database first
+      if (role === 'student') {
+        const studentData = getStudentData(identifier);
+        if (studentData) {
+          // Student found in local database
+          onLogin('student', {
+            ...studentData,
+            role: 'student'
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Try backend authentication
+      const response = await authAPI.login(identifier, password);
+      
+      if (response.success && response.user) {
+        onLogin(response.user.role, response.user);
+      } else {
+        Alert.alert('Login Failed', response.message || 'Invalid credentials');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.headerIcon}>🔐</Text>
+          <Image
+            source={require('../assets/images/CLGlogo.png')}
+            style={styles.headerLogo}
+            resizeMode="contain"
+          />
           <Text style={styles.headerTitle}>Welcome Back</Text>
           <Text style={styles.headerSubtitle}>Sign in to your account</Text>
         </View>
@@ -70,7 +114,15 @@ export default function LoginPage({
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>{role === 'student' ? 'Student ID' : 'Email'}</Text>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>{role === 'student' ? '🆔' : '📧'}</Text>
+              {role === 'student' ? (
+                <Text style={styles.idText}>ID</Text>
+              ) : (
+                <Image
+                  source={require('../assets/images/email.png')}
+                  style={styles.emailIcon}
+                  resizeMode="contain"
+                />
+              )}
               <TextInput
                 style={styles.input}
                 placeholder={role === 'student' ? 'B20232637' : 'your@email.com'}
@@ -84,7 +136,11 @@ export default function LoginPage({
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Password</Text>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>🔒</Text>
+              <Image
+                source={require('../assets/images/Lock.png')}
+                style={styles.lockIcon}
+                resizeMode="contain"
+              />
               <TextInput
                 ref={passwordInputRef}
                 style={styles.input}
@@ -100,9 +156,15 @@ export default function LoginPage({
             </View>
           </View>
 
-          <TouchableOpacity style={styles.loginBtn} onPress={() => onLogin(role)}>
-            <Text style={styles.loginBtnText}>Sign In</Text>
-            <Text style={styles.loginBtnArrow}>→</Text>
+          <TouchableOpacity style={styles.loginBtn} onPress={handleLoginPress} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Text style={styles.loginBtnText}>Sign In</Text>
+                <Text style={styles.loginBtnArrow}>→</Text>
+              </>
+            )}
           </TouchableOpacity>
 
           {role === 'student' && (
@@ -132,8 +194,9 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginTop: 20,
   },
-  headerIcon: {
-    fontSize: 60,
+  headerLogo: {
+    width: 100,
+    height: 100,
     marginBottom: 16,
   },
   headerTitle: {
@@ -213,6 +276,21 @@ const styles = StyleSheet.create({
   },
   inputIcon: {
     fontSize: 18,
+  },
+  idText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    width: 20,
+    textAlign: 'center',
+  },
+  lockIcon: {
+    width: 20,
+    height: 20,
+  },
+  emailIcon: {
+    width: 20,
+    height: 20,
   },
   input: {
     flex: 1,

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import BottomNav from '../components/BottomNav';
+import { scale, fontSize, spacing, padding, borderRadius, iconSize } from '../utils/responsive';
 
 interface IDCardScreenProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
+  currentUser?: any;
 }
 
-export default function IDCardScreen({ onLogout, onNavigate }: IDCardScreenProps) {
+export default function IDCardScreen({ onLogout, onNavigate, currentUser }: IDCardScreenProps) {
   const [activeNav, setActiveNav] = useState('idcard');
 
   return (
@@ -22,7 +24,7 @@ export default function IDCardScreen({ onLogout, onNavigate }: IDCardScreenProps
       </View>
 
       {/* Card Container */}
-      <View style={styles.cardContainer}>
+      <ScrollView style={styles.cardContainer} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* ID Card */}
         <View style={styles.card}>
           {/* Top Banner */}
@@ -30,7 +32,7 @@ export default function IDCardScreen({ onLogout, onNavigate }: IDCardScreenProps
             {/* Profile Image */}
             <View style={styles.profileImageWrapper}>
               <Image
-                source={{ uri: 'https://placehold.co/100x100/3B82F6/FFFFFF?text=JK' }}
+                source={{ uri: `https://placehold.co/100x100/3B82F6/FFFFFF?text=${(currentUser?.name || 'JK').split(' ').map((n: string) => n[0]).join('')}` }}
                 style={styles.profileImage}
               />
             </View>
@@ -38,26 +40,26 @@ export default function IDCardScreen({ onLogout, onNavigate }: IDCardScreenProps
 
           {/* Card Details */}
           <View style={styles.cardDetails}>
-            <Text style={styles.studentName}>Jai Kantharia</Text>
-            <Text style={styles.studentInfo}>Computer Science • Semester 4</Text>
+            <Text style={styles.studentName}>{currentUser?.name || 'Jai Kantharia'}</Text>
+            <Text style={styles.studentInfo}>{currentUser?.course || 'Computer Science'} • Semester {currentUser?.semester || 4}</Text>
 
             {/* Info Rows */}
             <View style={styles.infoSection}>
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>ID Number</Text>
-                <Text style={styles.infoValue}>B20232637</Text>
+                <Text style={styles.infoValue}>{currentUser?.id || 'B20232637'}</Text>
               </View>
               <View style={styles.divider} />
 
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>Department</Text>
-                <Text style={styles.infoValue}>Computer Science</Text>
+                <Text style={styles.infoValue}>{currentUser?.department || 'Computer Science'}</Text>
               </View>
               <View style={styles.divider} />
 
               <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>Email</Text>
-                <Text style={styles.infoValue}>jai@college.edu</Text>
+                <Text style={styles.infoValue}>{currentUser?.email || 'student@college.edu'}</Text>
               </View>
               <View style={styles.divider} />
 
@@ -115,21 +117,20 @@ export default function IDCardScreen({ onLogout, onNavigate }: IDCardScreenProps
             <Text style={styles.actionBtnText}>Share</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
 
       {/* Bottom Navigation */}
       <BottomNav
         role="student"
         active={activeNav}
         unreadCount={0}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {
             onNavigate('studentDashboard');
           } else if (page === 'notifications') {
             onNavigate('notifications');
-          } else if (page === 'fees') {
-            onNavigate('fees');
           } else if (page === 'profile') {
             onNavigate('profile');
           }
@@ -146,9 +147,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    paddingTop: 12,
+    paddingHorizontal: padding.lg,
+    paddingVertical: padding.md,
+    paddingTop: padding.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -156,54 +157,56 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e5e7eb',
   },
   backBtn: {
-    width: 40,
-    height: 40,
+    width: scale(40),
+    height: scale(40),
     justifyContent: 'center',
     alignItems: 'center',
   },
   backBtnText: {
-    fontSize: 24,
+    fontSize: fontSize['2xl'],
     color: '#3b82f6',
     fontWeight: '700',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: fontSize.lg,
     fontWeight: '700',
     color: '#1a1a2e',
   },
   headerSpacer: {
-    width: 40,
+    width: scale(40),
   },
   cardContainer: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    paddingBottom: 100,
+  },
+  scrollContent: {
+    paddingHorizontal: padding.lg,
+    paddingVertical: spacing.lg,
+    paddingBottom: scale(120),
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: borderRadius.xl,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 10,
-    marginBottom: 20,
+    marginBottom: spacing['2xl'],
   },
   banner: {
-    height: 100,
+    height: scale(100),
     backgroundColor: '#3b82f6',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 40,
+    paddingBottom: scale(40),
   },
   profileImageWrapper: {
     position: 'absolute',
-    bottom: -40,
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    bottom: scale(-40),
+    width: scale(80),
+    height: scale(80),
+    borderRadius: scale(40),
     borderWidth: 4,
     borderColor: '#fff',
     overflow: 'hidden',
@@ -214,39 +217,39 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   cardDetails: {
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingTop: scale(50),
+    paddingHorizontal: padding.lg,
+    paddingBottom: padding.lg,
     alignItems: 'center',
   },
   studentName: {
-    fontSize: 22,
+    fontSize: fontSize['2xl'],
     fontWeight: '700',
     color: '#1a1a2e',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   studentInfo: {
-    fontSize: 13,
+    fontSize: fontSize.sm,
     color: '#3b82f6',
     fontWeight: '600',
-    marginBottom: 20,
+    marginBottom: spacing.lg,
   },
   infoSection: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: spacing.md,
   },
   infoLabel: {
-    fontSize: 12,
+    fontSize: fontSize.xs,
     color: '#999',
     fontWeight: '500',
   },
   infoValue: {
-    fontSize: 13,
+    fontSize: fontSize.sm,
     fontWeight: '700',
     color: '#1a1a2e',
   },
@@ -256,76 +259,76 @@ const styles = StyleSheet.create({
   },
   barcodeContainer: {
     width: '100%',
-    height: 50,
+    height: scale(50),
     backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    borderRadius: borderRadius.md,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   barcode: {
     fontFamily: 'monospace',
-    fontSize: 12,
+    fontSize: fontSize.xs,
     letterSpacing: 2,
     color: '#999',
     fontWeight: '600',
   },
   issueDate: {
-    fontSize: 11,
+    fontSize: fontSize.xs,
     color: '#999',
     fontStyle: 'italic',
   },
   cardInfo: {
     backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
+    borderRadius: borderRadius.lg,
+    padding: padding.lg,
+    marginBottom: spacing['2xl'],
   },
   cardInfoTitle: {
-    fontSize: 14,
+    fontSize: fontSize.base,
     fontWeight: '700',
     color: '#1a1a2e',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   cardInfoItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: spacing.sm,
   },
   cardInfoLabel: {
-    fontSize: 13,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: '#666',
   },
   cardInfoValue: {
-    fontSize: 13,
+    fontSize: fontSize.sm,
     fontWeight: '600',
     color: '#1a1a2e',
   },
   statusBadge: {
     backgroundColor: '#d1fae5',
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: padding.md,
+    paddingVertical: spacing.xs,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: fontSize.xs,
     fontWeight: '700',
     color: '#10b981',
   },
   actionsContainer: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
     justifyContent: 'space-between',
   },
   actionBtn: {
     flex: 1,
     backgroundColor: '#3b82f6',
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: borderRadius.lg,
+    paddingVertical: padding.md,
     alignItems: 'center',
-    gap: 6,
+    gap: spacing.sm,
     shadowColor: '#3b82f6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -333,11 +336,11 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   actionBtnIcon: {
-    fontSize: 20,
+    fontSize: iconSize.md,
   },
   actionBtnText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: fontSize.xs,
     fontWeight: '700',
   },
 });

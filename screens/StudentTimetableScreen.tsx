@@ -18,12 +18,14 @@ interface StudentTimetableScreenProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
   masterTimetable: TimetableClass[];
+  currentUser?: any;
 }
 
 export default function StudentTimetableScreen({
   onLogout,
   onNavigate,
   masterTimetable,
+  currentUser,
 }: StudentTimetableScreenProps) {
   const [activeNav, setActiveNav] = useState('home');
 
@@ -97,6 +99,7 @@ export default function StudentTimetableScreen({
         role="student"
         active={activeNav}
         unreadCount={0}
+        currentUser={currentUser}
         onNavigate={(page) => {
           setActiveNav(page);
           if (page === 'home') {

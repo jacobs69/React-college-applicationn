@@ -9,14 +9,16 @@ import {
   Alert,
   Modal,
 } from 'react-native';
+import { scale, fontSize, spacing, padding, borderRadius, iconSize } from '../utils/responsive';
 
 interface ClassDetailScreenProps {
   onLogout: () => void;
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, data?: any) => void;
   classData?: any;
   students?: any[];
   attendanceRecords?: any[];
   setAttendanceRecords?: (records: any[]) => void;
+  currentUser?: any;
 }
 
 export default function ClassDetailScreen({
@@ -26,6 +28,7 @@ export default function ClassDetailScreen({
   students = [],
   attendanceRecords = [],
   setAttendanceRecords,
+  currentUser,
 }: ClassDetailScreenProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [statusMap, setStatusMap] = useState<any>({});
@@ -117,7 +120,14 @@ export default function ClassDetailScreen({
         <Text style={styles.studentId}>Roll No: {item} | ID: B2023{String(item).padStart(2, '0')}</Text>
       </View>
       <View style={styles.studentActions}>
-        <TouchableOpacity style={styles.actionBtn}>
+        <TouchableOpacity 
+          style={styles.actionBtn}
+          onPress={() => {
+            const studentId = `B2023${String(item).padStart(2, '0')}`;
+            const studentName = `Student ${item}`;
+            onNavigate('studentOverallReport', { studentId, studentName });
+          }}
+        >
           <Text style={styles.actionIcon}>📊</Text>
         </TouchableOpacity>
       </View>
@@ -453,9 +463,9 @@ const styles = StyleSheet.create({
     color: '#3b82f6',
   },
   tabContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    paddingBottom: 100,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: padding.lg,
+    paddingBottom: scale(120),
   },
   classHeaderCard: {
     backgroundColor: '#fff',
@@ -541,6 +551,9 @@ const styles = StyleSheet.create({
   },
   actionCardIcon: {
     fontSize: 24,
+  },
+  actionIcon: {
+    fontSize: iconSize.md,
   },
   actionCardContent: {
     flex: 1,

@@ -25,12 +25,14 @@ interface ResultDetailScreenProps {
   onLogout: () => void;
   onNavigate: (page: string) => void;
   result: Result | null;
+  currentUser?: any;
 }
 
 export default function ResultDetailScreen({
   onLogout,
   onNavigate,
   result,
+  currentUser,
 }: ResultDetailScreenProps) {
   if (!result) {
     return (
