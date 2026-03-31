@@ -48,8 +48,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "37a6efbd-1e57-468e-b20b-3da4e22ef61c"
+        "projectId": "fefe9445-dcfa-48df-8722-327d00303ea4"
       }
-    }
+    },
+    "owner": "jaikai"
   }
 }
